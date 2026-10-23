@@ -1,0 +1,9 @@
+{
+  "name": "pr-review",
+  "version": "1.0.0",
+  "description": "Полный рабочий процесс ревью PR с проверками безопасности, тестов и документации",
+  "author": {
+    "name": "Anthropic"
+  },
+  "license": "MIT"
+}

@@ -1,6 +1,6 @@
 # Hướng Dẫn Claude Code
 
-🌐 **Language / Ngôn ngữ:** [English](../README.md) | [Tiếng Việt](README.md)
+🌐 **Language / Ngôn ngữ:** [English](../README.md) | [Tiếng Việt](README.md) | [Русский](../ru/README.md)
 
 > **Làm chủ Claude Code trong một cuối tuần**
 

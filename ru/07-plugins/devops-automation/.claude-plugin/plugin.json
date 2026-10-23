@@ -1,0 +1,9 @@
+{
+  "name": "devops-automation",
+  "version": "1.0.0",
+  "description": "Полная автоматизация DevOps для деплоя, мониторинга и реагирования на инциденты",
+  "author": {
+    "name": "Community"
+  },
+  "license": "MIT"
+}
