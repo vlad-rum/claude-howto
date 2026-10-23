@@ -1,0 +1,234 @@
+{
+  "description": "Примеры конфигураций settings.json Claude Code для разных сценариев",
+  "examples": {
+    "development": {
+      "name": "Среда разработки",
+      "description": "Конфигурация для активной разработки: автоматически принимать правки, спрашивать перед командами, форматировать и делать линтинг при записи",
+      "config": {
+        "model": "claude-sonnet-5",
+        "permissions": {
+          "defaultMode": "acceptEdits",
+          "allow": [
+            "Bash(npm run *)",
+            "Bash(git diff:*)",
+            "Bash(git status:*)"
+          ]
+        },
+        "hooks": {
+          "PostToolUse": [
+            {
+              "matcher": "Write|Edit",
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/format-and-lint.sh"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "code_review": {
+      "name": "Режим код-ревью",
+      "description": "Конфигурация для проверки кода без изменений",
+      "config": {
+        "model": "claude-sonnet-5",
+        "permissions": {
+          "defaultMode": "plan"
+        },
+        "env": {
+          "CLAUDE_CODE_EFFORT_LEVEL": "high"
+        }
+      }
+    },
+    "learning": {
+      "name": "Режим обучения",
+      "description": "Конфигурация для обучения и экспериментов: спрашивать перед каждым действием, часто создавать контрольные точки",
+      "config": {
+        "model": "claude-sonnet-5",
+        "permissions": {
+          "defaultMode": "manual"
+        },
+        "env": {
+          "CLAUDE_CODE_EFFORT_LEVEL": "high"
+        },
+        "fileCheckpointingEnabled": true
+      }
+    },
+    "production": {
+      "name": "Деплой в продакшен",
+      "description": "Конфигурация для операций в продакшене с проверками безопасности",
+      "config": {
+        "model": "claude-opus-5",
+        "permissions": {
+          "defaultMode": "manual",
+          "deny": [
+            "Bash(git push --force*)",
+            "Bash(rm -rf*)"
+          ]
+        },
+        "hooks": {
+          "PreToolUse": [
+            {
+              "matcher": "Bash",
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/pre-commit.sh"
+                }
+              ]
+            }
+          ]
+        },
+        "fileCheckpointingEnabled": true
+      }
+    },
+    "ci_cd": {
+      "name": "Пайплайн CI/CD",
+      "description": "Конфигурация для автоматических операций CI/CD, запуск без взаимодействия через `claude -p`",
+      "config": {
+        "model": "claude-sonnet-5",
+        "permissions": {
+          "defaultMode": "acceptEdits",
+          "allow": [
+            "Bash(npm test:*)",
+            "Bash(npm run build:*)",
+            "Bash(npm run lint:*)"
+          ]
+        },
+        "env": {
+          "CI": "true"
+        }
+      }
+    },
+    "security_audit": {
+      "name": "Аудит безопасности",
+      "description": "Конфигурация для анализа кода с упором на безопасность",
+      "config": {
+        "model": "claude-opus-5",
+        "permissions": {
+          "defaultMode": "plan"
+        },
+        "env": {
+          "CLAUDE_CODE_EFFORT_LEVEL": "max"
+        },
+        "hooks": {
+          "PostToolUse": [
+            {
+              "matcher": "Read",
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/security-scan.sh"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "performance_optimization": {
+      "name": "Оптимизация производительности",
+      "description": "Конфигурация для анализа и оптимизации производительности",
+      "config": {
+        "model": "claude-sonnet-5",
+        "permissions": {
+          "defaultMode": "acceptEdits"
+        },
+        "fileCheckpointingEnabled": true
+      }
+    },
+    "pair_programming": {
+      "name": "Парное программирование",
+      "description": "Конфигурация для совместной разработки",
+      "config": {
+        "model": "claude-sonnet-5",
+        "permissions": {
+          "defaultMode": "manual"
+        },
+        "env": {
+          "CLAUDE_CODE_EFFORT_LEVEL": "high"
+        }
+      }
+    },
+    "refactoring": {
+      "name": "Крупный рефакторинг",
+      "description": "Конфигурация для серьёзного рефакторинга: резервная копия перед правками, затем запуск связанных тестов",
+      "config": {
+        "model": "claude-opus-5",
+        "permissions": {
+          "defaultMode": "manual",
+          "allow": [
+            "Bash(npm test -- --findRelatedTests *)"
+          ]
+        },
+        "fileCheckpointingEnabled": true,
+        "hooks": {
+          "PreToolUse": [
+            {
+              "matcher": "Edit",
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/backup-file.sh"
+                }
+              ]
+            }
+          ],
+          "PostToolUse": [
+            {
+              "matcher": "Edit",
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/run-related-tests.sh"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "autonomous": {
+      "name": "Автономная разработка",
+      "description": "Конфигурация для автономной работы: фоновый классификатор безопасности режима Auto плюс песочница файловой системы и сети",
+      "config": {
+        "model": "claude-sonnet-5",
+        "permissions": {
+          "defaultMode": "auto"
+        },
+        "sandbox": {
+          "enabled": true,
+          "failIfUnavailable": false
+        }
+      }
+    },
+    "documentation": {
+      "name": "Написание документации",
+      "description": "Конфигурация для написания документации",
+      "config": {
+        "model": "claude-sonnet-5",
+        "permissions": {
+          "defaultMode": "acceptEdits",
+          "allow": [
+            "Edit(**/*.md)"
+          ]
+        },
+        "hooks": {
+          "PostToolUse": [
+            {
+              "matcher": "Write",
+              "hooks": [
+                {
+                  "type": "command",
+                  "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/markdownlint.sh"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}
